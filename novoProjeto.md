@@ -100,14 +100,14 @@ ele abre uma aba com varias configurações
 a gente vai procura  a edite passar a opçõas
 sorce.fixall.eslint: true
 
-nos vamos ambem no package json e criamos um comando chamado lint para dar com npm run
+nos vamos também no package json e criamos um comando chamado lint para dar com npm run
 o lint vai ser algo que vai verificar todos os erros de todos os arquivos e dar um fix neles de uma vez.
 nesse script vai ter eslint a pasta onde estão os codigos por exemplo src --ext para sinalizar a estensão e as extençoes dos arquivos.ts.js etc e um --fix para ele corrigir tudo que for possivel de corrigir.
 
 
 # sqlite
 nos vamos usar o banco de dados sqlite primeiro porque ele usa o sql relacional. 
-banco relacional é muito perforlatico e usa 99% das fucnionalidades de outros bancos e é mais simples.
+banco relacional é muito performatico e usa 99% das funcionalidades de outros bancos e é mais simples.
 alem disso não precisamos instalar nada na maquina porque os dados são salvos la mesmo.
 é muito facil tambem de migrar para outro banco n futuro.
     * conexão com o banco
@@ -116,7 +116,7 @@ alem disso não precisamos instalar nada na maquina porque os dados são salvos 
     1 drivers nativos - ferramentas bibliotecas de baixo nivel que permite que a gente se comunique com o banco de maneira pouco abstrata. por exemplo o mysql2
     a gente tem que escrever a query de forma bem crua exatamente epecificando cada coisa 
 
-    2 query builders - formas de evitar ter que aprender muito sql e focar na linguagel que estamos trabalhando. no caso do node o mais famoso é o knex.js
+    2 query builders - formas de evitar ter que aprender muito sql e focar na linguagem que estamos trabalhando. no caso do node o mais famoso é o knex.js
     ele vai construir querys para nos. facilita a escrita dos comandos sql com codigo js. em outras palavras usa mais ou menos uma sintaxe de js para os comandos sql
     
     3 orn - é um nivel de abstração mais alto. praticamente não nos procuramos com o sql. a sintaxe vem da linguagem
@@ -128,10 +128,10 @@ alem disso não precisamos instalar nada na maquina porque os dados são salvos 
 temos o comando para instalar o knex npm i knex --save
 porem não vamos instalar so o knex mas tambem o driver do banco de dados ja junto. ou seja colocamos o npm install knex sqlite3
 uma vez que isso esteja instalado vamos criar dentro da pasta src um arquivo chamado database.ts
-esse qrauivo vai fazer uma conexção com o banco de dados. então nele vamos importar do knex uma funcção chamada kenx, porem vamos renomear ela como setupKnex para não dar o mesmo nome no nosso uso dela vai ficar assim
+esse arquivo vai fazer uma conexação com o banco de dados. então nele vamos importar do knex uma funcção chamada kenx, porem vamos renomear ela como setupKnex para não dar o mesmo nome no nosso uso dela vai ficar assim
 import { knex as setupKnex } from 'knex'
 
-agora podemos fazer uma const chamada knex e igualar ela a essa fjunção e exportar ela
+agora podemos fazer uma const chamada knex e igualar ela a essa função e exportar ela
 fica assim
 export const kenx = setupKnex()
 
@@ -150,7 +150,7 @@ export const config = {
 export const knex = setupKnex(config)
 
 vamos na rota server.ts
-vamos na rota hello e transformamos ela em async e nela eu passo uma const tables e ela vai ser igual o await da promisse do knex do batabase e para elea gente passa uma tabela padrão do sqlite apenas para testar qiue é a sqlite_schema  e damos um select'*'
+vamos na rota hello e transformamos ela em async e nela eu passo uma const tables e ela vai ser igual o await da promisse do knex do database e para ele a gente passa uma tabela padrão do sqlite apenas para testar que é a sqlite_schema  e damos um select'*'
 fica assim:
 app.get('/hello', async () => {
   const tables = await knex('sqlite_schema').select('*')
@@ -462,7 +462,7 @@ dentro do arquivo.env todas as configurações vao ser chave e valor.
 o valor a gente pode colocar entre aspas ou não mas é indicado colocar entre aspas duplas. ai por exemplo vamos dizer que o databe url vai ser o endereço dele por exemplo fica assim:
 DATABASE_URL="./db/app.db"
 
-agora para ler esse arquivo .env dentro do node precisamos instalar uma extenão chamada dotenv
+agora para ler esse arquivo .env dentro do node precisamos instalar uma extensão chamada dotenv
 npm i dotenv
 agora la no nosso arquivo databes.ts nos vamos importar no topo de tudo dotenv/config
 para informação a pagina de database.ts fica assim:
@@ -486,15 +486,15 @@ export const knex = setupKnex(config)
 
 deve ter algo na aula que eu perdi porque a minha estava um pouco diferente.
 
-esse dotenv/config que a gente importou vai ler o database e vai export todos os valores que temos no nosso .env dentro de uma variavel glgal chamada process.env essa process.env vai trazer varias variaveis automaticas e tambem a nossa database_URL que a gente programou no .env.
-com isso no lugar de filename que a gente passa o endereco que colocamos para a nosso app.db nos podemos colocar process.env.DATABASE_URL e ele vai ler ovalor que nos passamos la. é uma forma de modular o codigo.
+esse dotenv/config que a gente importou vai ler o database e vai export todos os valores que temos no nosso .env dentro de uma variavel glogal chamada process.env essa process.env vai trazer varias variaveis automaticas e tambem a nossa database_URL que a gente programou no .env.
+com isso no lugar de filename que a gente passa o endereco que colocamos para a nosso app.db nos podemos colocar process.env.DATABASE_URL e ele vai ler o valor que nos passamos la. é uma forma de modular o codigo.
 export const config: Knex.Config = {
   client: 'sqlite',
   connection: {
     filename: process.env.DATABASE_URL,
   },
 
-  porem temos um pequeno erro porque o typescript percebe que o database_url pode estar preenchido ou vazio la no .env e o typescript reclama dessa possibilidade dele estar vazio. no futuro vamos resolver isso de uma forma melhor mas por enquanto vamos abrir uma condicional antes do export para faar que se nos nõa tivermos informado o process.nv.database_urlnos vamos disparar um erro e ai nenhum codigo que esta abaixo vai executar
+  porem temos um pequeno erro porque o typescript percebe que o database_url pode estar preenchido ou vazio la no .env e o typescript reclama dessa possibilidade dele estar vazio. no futuro vamos resolver isso de uma forma melhor mas por enquanto vamos abrir uma condicional antes do export para faar que se nos não tivermos informado o process.env.database_url nos vamos disparar um erro e ai nenhum codigo que esta abaixo vai executar
   a pagina fica assim por enquanto:
   import 'dotenv/config'
 import { knex as setupKnex, Knex } from 'knex'
@@ -518,7 +518,7 @@ export const config: Knex.Config = {
 export const knex = setupKnex(config)
 
 as variaveis de ambiente nos colocamos geralmente dados sensiveis, chaves de api que vamos integrar com serviços terceiros e etc. então o .env vai estar no gitignore.
-e como esse arquivo não vai entrer no controle de versão ou seja no github um outro desenvolvedor que for pegar seu codigo não vai saber o que informar nas variaveis. então a gente vai criar um arquivo chamado .env.example na raiz do projeto. e dentro desse arquivo colocamos quais são as variaveis que temos mas não colocamos os valores para elas. principalmente de conteudos sensiveis. poderia ficar assim:
+e como esse arquivo não vai entrar no controle de versão ou seja no github um outro desenvolvedor que for pegar seu codigo não vai saber o que informar nas variaveis. então a gente vai criar um arquivo chamado .env.example na raiz do projeto. e dentro desse arquivo colocamos quais são as variaveis que temos mas não colocamos os valores para elas. principalmente de conteudos sensiveis. poderia ficar assim:
 DATABASE_URL="./db/app.db"
 
 API_KEY=
@@ -532,20 +532,20 @@ vamos tambem instalar a biblioteca zod para a validação de dados
 npm i zod
 nos vamos tirar a importação da dot env config do database e passar ela para o env/index.ts
 agora essa importação vai ler o nosso arquivo de variaveis e vai passar todas elas para o process.env então podemos acessar ela usando o process.env.DATABASE_url
-vamos imortar de dentro do zod o z que serve para a gente criar um schema ou seja um formato de daos que vamos receber das nossas variaveis ambientes e nos vamos fazer de uma vez para todos as nossas variaves de ambiente não vai ser uma por vez.
+vamos imortar de dentro do zod o z que serve para a gente criar um schema ou seja um formato de dados que vamos receber das nossas variaveis ambientes e nos vamos fazer de uma vez para todos as nossas variaves de ambiente não vai ser uma por vez.
 então vamos definir que o nosso process.env é um objeto usando o z.object
-por enauqnto fica assim
+por enquanto fica assim
 const envSchema = z.object({
-  e qaui dentro vamos passar qausi variaveis vamos ter dentro de nossa aplicação
+  e aqui dentro vamos passar quais variaveis vamos ter dentro de nossa aplicação
 
 })
 
 vamos colocar   database_URL  e ela vai ser uma string então vamos colocar : z.string() se ela podesse ser nula tambem a gente colocaria um .nullable depois do string() 
 e ai dentro desse objeto nos vamos passando uma por uma cada tipo de variavbeis ambientes que a gente colocar no nosso app como por enquanto so temos essa fica so ela.
-apos isso  colocamos apos fechar esse objet uma nova cons
+apos isso  colocamos apos fechar esse objet uma nova const
 const env = envSchela.parse(process.env) 
 ou seja a const env vai pegar esse objeto e vai aplicar a nosso process.env
-caso alguma informação de erro esse metodo de parce vai dar um throw new Error automaticamente e pararia a aplicação. se tudo der certo o restante do codigo vai funcinar automaticamente enão se a gente escreve env. ele ja acha o databaseurl la dentro então podemos usar com o codigo sabendo que é uma string.
+caso alguma informação de erro esse metodo de parce vai dar um throw new Error automaticamente e pararia a aplicação. se tudo der certo o restante do codigo vai funcinar automaticamente e não se a gente escreve env. ele ja acha o databaseurl la dentro então podemos usar com o codigo sabendo que é uma string.
 so para encher um pouco vamos colocar tambem a variavel port dizendo que precisa ser um numero e se não tiver definida o valor default dela vai ser 3333
 apos isso vamos exportar a nossa const env para usar ela em outros lugares. a pagina fica assim:
 import 'dotenv/config'
@@ -577,7 +577,7 @@ export const config: Knex.Config = {
 export const knex = setupKnex(config)
  podemos no server tambem ao invez de usar a port 3333 definida a gente simplismente importar do env a port.
  outra variavel ambiente muito comum é a que especifica justamente em qual ambiente estamos a chamada node_env ele geralmente é implicito pelas ferramentes que estamos usando na aplicação mas vamos declarar ele tambem a variavel node env vai ser geralmente development test ou production então vamos usar para ela a caracteristica z.enum() enum significa que ela vai ser uma entre algumas opções no caso essas tres. colocamos isso dentro de um array e para o default o z ja sugere uma dessas tres vamos colocar production ou seja se a gente não especificar vai ser essa. e vamos la no nosso .env e vamos informar como developmen,t. e vamos passar logo isso tambem para nosso example.
- entéao se a gente executar a aplicação sem uma variavel obrigatoria vai dar erro. porem o erro não explica bem o que aconteceu. para o erro ficar mais claro a gente vai  no index e mudar o tipo de parse para o safeParse que é igual o parse mas não dispara o erro caso de um problema. então ao oinvez de dar o export direto nos vamos chamar essa variavel de _env como variavel provisoria
+ entéao se a gente executar a aplicação sem uma variavel obrigatoria vai dar erro. porem o erro não explica bem o que aconteceu. para o erro ficar mais claro a gente vai  no index e mudar o tipo de parse para o safeParse que é igual o parse mas não dispara o erro caso de um problema. então ao inves de dar o export direto nos vamos chamar essa variavel de _env como variavel provisoria
  e vamos fazer se _env for igual a false que significa que ele falhou porque algo não foi passado a gente vai dar nosso proprio erro com o que acontece e dar um env.error.format para entender qual variavel esta com erro. e caso ele passe por esse erro a gente exporta o env como sendo o data do _env a pagina fica assim
  import 'dotenv/config'
 import { z } from 'zod'
@@ -599,7 +599,7 @@ export const env = _env.data
 
 # planejamentos do banco de dados
 precisamos pensar nessas tres coisas antes de sair criando nossas rotas.
-ou seja quais são as funcionalidades da aplicação o que o usuario pode ou n ão pode fazer no app
+ou seja quais são as funcionalidades da aplicação o que o usuario pode ou não pode fazer no app
 
 ## requisitos funcionais
 
@@ -645,15 +645,15 @@ app.post('/hello', async () => {
 
 
 porem isso daria errado porque o app não existe nesse contexto então essa rota não saberia o que fazer.
-a gente poderia exportar a variavel app do server mas não faz muito senido porque o app que vai importar as rotas, assim o app faria um vai e vem de exportar a app e trazer de volta as rotas.
+a gente poderia exportar a variavel app do server mas não faz muito sentido porque o app que vai importar as rotas, assim o app faria um vai e vem de exportar a app e trazer de volta as rotas.
 então vamos usar essa funcionalidade de dentro do fastify que é a plugin. como vamos usar
 na pagina de transactions vamos exportar uma funcção chamada transactionRoutes.
 que vai ser o nome do nosso plugin 
 e essa função vai receber como parametro o nosso app
 e ela vai ter dentro dela as rotas
 importamos o knex do nosso database
-agora dentro do osso server vamos retirar a nossas rotas que estavam la e vamos chamar o pluging
-fazemos isso ssim
+agora dentro do nosso server vamos retirar a nossas rotas que estavam la e vamos chamar o pluging
+fazemos isso assim
 app.register(transactionsRoutes) ou seja passamos para o register o nome do nosso plugin
 todo plugin do fastify precisa obrigatoriamente ser uma função assincrona enão quando estivermos criando a função transactionRoutes temos que declarar como async
 o transaction fica assim:
@@ -702,10 +702,10 @@ app
   export async function transactionsRoutes(app: FastifyInstance) mandamos importar o instace automaticamente.
   para resolver o poblema da importação no server é so salvar o transactions como .ts
 
-  podemos fazer diversos plugins e colocar eles el nossa aplicação. quantos quisermos porem é importante ter uma ordem neles. a rodem de leitura caso ul precise modificar algo do outro. mas em breve vamos aprender mais sobre isso.
+  podemos fazer diversos plugins e colocar eles em nossa aplicação. quantos quisermos porem é importante ter uma ordem neles. a ordem de leitura caso ul precise modificar algo do outro. mas em breve vamos aprender mais sobre isso.
   
   # rotas
-  como nossas rotas todas vão ter o endereço /transactions nos podemos tirar esse endereço usando a importação do plugin no register passando um segundo parametro com informações u seja la no server na register a gente passa o prefix como uma informação no objeto do segundo arguemento da função. fica assim:
+  como nossas rotas todas vão ter o endereço /transactions nos podemos tirar esse endereço usando a importação do plugin no register passando um segundo parametro com informações u seja la no server na register a gente passa o prefix como uma informação no objeto do segundo argumento da função. fica assim:
   app.register(transactionsRoutes, {
   prefix: 'transactions',
 })
@@ -725,7 +725,7 @@ estava assim:
     return transaction
   })
 
-  vamos retirar a const transaction e colocar uma desestruturação para pegar da requisião as informações que vao vir de la.
+  vamos retirar a const transaction e colocar uma desestruturação para pegar da requisição as informações que vao vir de la.
   nos podemos receber dentro dessa async a nossa request
    e agora dando request. nos temos varias possibilidades nos vamos pegar o body. de onde vem as informações enviadas pelo usuario.
    porem esse request.body tem o tipo como desconhecido. e queremos evitar isso.
@@ -741,7 +741,7 @@ estava assim:
       const body = createTransactionBodySchema.parse(request.body)
 
       ou seja nos validamos se o que vem do nosso request body bate com o esquema de validação que criamos. caso de erro o parseda um throw e ai não le o resto do codigo.
-      agora dentro do body nos ja temos o tipo dessa validaçéao. nos podemos entãosubstituir o body por uma desestruturação. a gente coloca um objeto do lado esquerdo para pegar o title o amount e o tyope. fica assim:
+      agora dentro do body nos ja temos o tipo dessa validaçéao. nos podemos então substituir o body por uma desestruturação. a gente coloca um objeto do lado esquerdo para pegar o title o amount e o tyope. fica assim:
       const { title, amount, type } = createTransactionBodySchema.parse(
       request.body,
     )
@@ -761,7 +761,7 @@ estava assim:
       se for do tipo credito vamos usar o amount como ele esta. se for debito vamos usar ele como negativo assim:
         amount: type === 'credit' ? amount : amount * -1,
 
-        nas api a gente geralmete não faz retorno enão vamos tirar essa parte do .returning(*)
+        nas api a gente geralmete não faz retorno e não vamos tirar essa parte do .returning(*)
         nos vamos tambem tirar o const transaction = para não precisar retornar nada ou seja não precisar usar essa const. vai iniciar ja com o await
         porem nos sabemos que precisamos retornar um http code
         vamos entao passar para a funçao a response que o knex chama de reply

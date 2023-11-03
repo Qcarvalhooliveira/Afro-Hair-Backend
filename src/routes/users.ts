@@ -7,6 +7,7 @@ import bcrypt from 'bcrypt';
 export async function usersRoutes (app: FastifyInstance){
 
     app.get('/users', async ()=>{
+      // get route for users its just for backend to see the users when in developping stage, in production i don't think it's safe to have it
         const userTables = await knex('users').select('*')
 
         
@@ -42,4 +43,15 @@ export async function usersRoutes (app: FastifyInstance){
           }
         });
         
+    app.delete(`/users/:id`, async (req, res)=>{
+      const createUserParamschema = z.object({
+        id: z.string(),
+    })
+    const { id } = createUserParamschema.parse(req.params)
+        const deleteUsers = await knex('users').where({usersId: id}).del()
+        return res.send({deleteUsers})
+    })
+    
     }
+
+    

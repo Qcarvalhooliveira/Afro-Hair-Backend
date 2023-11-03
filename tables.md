@@ -12,8 +12,8 @@ campo user foringKey => userID
 campo productLiked
 
 # o que o usuario vai fazer
-[] o usuario pode criar um perfil
-[] o usuario pode deletar seu perfil ?
+[v] o usuario pode criar um perfil
+[v] o usuario pode deletar seu perfil 
 [] o usuario pode logar em seu perfil
 [] o usuario pode dar likes em produtos
 [] o usuario pode retirar likes de produtos
@@ -21,7 +21,7 @@ campo productLiked
 
 ## rotas
 post /users
-delete /users ?
+delete /users 
 post /session
 
 (autenticado)

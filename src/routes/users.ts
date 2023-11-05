@@ -52,6 +52,40 @@ export async function usersRoutes (app: FastifyInstance){
         return res.send({deleteUsers})
     })
     
+
+      app.post('/api/login', async (req, res) => {
+      const loginBodySchema = z.object({
+        email: z.string(),
+        password: z.string(),
+      });
+    
+      const { email, password } = loginBodySchema.parse(req.body);
+    
+      try {
+        const user = await knex('users').where({ email }).first();
+    
+        if (!user) {
+          // Usuário não encontrado
+          return res.status(401).send('Credenciais inválidas');
+        }
+    
+        const isPasswordValid = await bcrypt.compare(password, user.password);
+    
+        if (!isPasswordValid) {
+          // Senha incorreta
+          return res.status(401).send('Credenciais inválidas');
+        }
+    
+        // Autenticação bem-sucedida
+        // Você pode gerar um token de autenticação JWT e enviá-lo de volta para o cliente aqui
+    
+        res.status(200).send('Login bem-sucedido');
+      } catch (error) {
+        console.error('Erro ao fazer login', error);
+        res.status(500).send('Erro interno no servidor');
+      }
+    });
+    
     }
 
     

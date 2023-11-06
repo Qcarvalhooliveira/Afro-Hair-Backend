@@ -42,7 +42,7 @@ export async function usersRoutes (app: FastifyInstance){
             });
           
         
-            res.send({ "createUser": createUser });
+            res.status(201).send({ "createUser": createUser });
           } catch (error) {
             console.error('Error when making password hash', error);
             res.status(500).send('Internal error making password hash');
@@ -50,12 +50,12 @@ export async function usersRoutes (app: FastifyInstance){
         });
         
     app.delete(`/users/:id`,{preValidation: [verifyJwt]}, async (req, res)=>{
-      const createUserParamschema = z.object({
+      const createUserParamSchema = z.object({
         id: z.string(),
     })
-    const { id } = createUserParamschema.parse(req.params)
+    const { id } = createUserParamSchema.parse(req.params)
         const deleteUsers = await knex('users').where({usersId: id}).del()
-        return res.send({deleteUsers})
+        return res.status(202).send({deleteUsers})
     })
     
 

@@ -1307,7 +1307,7 @@ esse teste vai fazer uma chamada http
 no nosso server nos usamos o app.listen
 o que quer dizer que se no nosso teste nos importarmos o app que é a porta de entrada para fazer requisições. ao importar isso ele vai tentar subir um servidor na porta 3333 porem para o teste não é bom subir um servidor porque o pode dar conflito usar a mesma porta que o programa e tudo maais.
 a gente poderia usar outra porta, porem colocar o servidor no ar demora um pouco tando pra iniciar quanto para matar. então existe uma ferramente para o ambiente de node chamada supertest e vamos instalar ela
-npm supertest -D
+npm i supertest -D
 essa ferramente pode serir para fazer requisições para a aplicação sem colocar a aplicação no ar, sel usar o metodo listne. para fazer isso vamos separar nosso server em dois arquivos. o app.ts e o server que ja existe.
 no app nos vamos pegar todo o codigo que esta antes do app.listen e jogar ele la e exportar o app.
 no server nos vamos importr o app e importar as variaveis ambientes e fazer so o listen.

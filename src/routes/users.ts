@@ -49,14 +49,19 @@ export async function usersRoutes (app: FastifyInstance){
           }
         });
         
-    app.delete(`/users/:id`,{preValidation: [verifyJwt]}, async (req, res)=>{
-      const createUserParamSchema = z.object({
-        id: z.string(),
-    })
-    const { id } = createUserParamSchema.parse(req.params)
-        const deleteUsers = await knex('users').where({usersId: id}).del()
-        return res.status(202).send({deleteUsers})
-    })
+        app.delete(`/users/:id`, { preValidation: [verifyJwt] }, async (req, res) => {
+          const createUserParamSchema = z.object({
+              id: z.string(),
+          })
+          const { id } = createUserParamSchema.parse(req.params)
+          const deleteCount = await knex('users').where({ usersId: id }).del()
+      
+          if (deleteCount === 0) {
+              return res.status(404).send('User not found');
+          }
+      
+          return res.status(202).send({ deleteCount });
+      });
     
 
       app.post('/users/login', async (req, res) => {

@@ -1,5 +1,13 @@
-import 'dotenv/config'
+import { config } from 'dotenv'
 import { z } from 'zod'
+
+if (process.env.NODE_ENV === 'test') {
+  config({
+    path: '.env.test',
+  })
+} else {
+  config()
+}
 
 const envSchema = z.object({
     NODE_ENV: z.enum(['development', 'test', 'production']).default('production'),
@@ -8,6 +16,8 @@ const envSchema = z.object({
     JWT_KEY: z.string(),
     REFRESH_JWT_KEY: z.string(),
 })
+
+
 
 const _env = envSchema.safeParse(process.env)
 

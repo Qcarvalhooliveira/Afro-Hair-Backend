@@ -3,8 +3,14 @@ import { knex } from '../database'
 import crypto from 'node:crypto'
 import { z } from 'zod'
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken'
+import {env} from '../env/index'
+import {verifyJwt} from '../middleware/verify-jwt'
 
 export async function usersRoutes (app: FastifyInstance){
+  const secretKey = env.JWT_KEY
+  const refreshTokenSecretKey = env.REFRESH_JWT_KEY
+
 
     app.get('/users', async ()=>{
       // get route for users its just for backend to see the users when in developping stage, in production i don't think it's safe to have it
@@ -43,7 +49,7 @@ export async function usersRoutes (app: FastifyInstance){
           }
         });
         
-    app.delete(`/users/:id`, async (req, res)=>{
+    app.delete(`/users/:id`,{preValidation: [verifyJwt]}, async (req, res)=>{
       const createUserParamschema = z.object({
         id: z.string(),
     })
@@ -53,7 +59,7 @@ export async function usersRoutes (app: FastifyInstance){
     })
     
 
-      app.post('/api/login', async (req, res) => {
+      app.post('/users/login', async (req, res) => {
       const loginBodySchema = z.object({
         email: z.string(),
         password: z.string(),
@@ -66,26 +72,73 @@ export async function usersRoutes (app: FastifyInstance){
     
         if (!user) {
           // Usuário não encontrado
-          return res.status(401).send('Credenciais inválidas');
+          return res.status(401).send('Invalid credentials');
         }
     
         const isPasswordValid = await bcrypt.compare(password, user.password);
     
         if (!isPasswordValid) {
           // Senha incorreta
-          return res.status(401).send('Credenciais inválidas');
+          return res.status(401).send('Invalid credentials');
         }
     
         // Autenticação bem-sucedida
-        // Você pode gerar um token de autenticação JWT e enviá-lo de volta para o cliente aqui
-    
-        res.status(200).send('Login bem-sucedido');
+
+        const token = jwt.sign({ id: user.usersId }, secretKey, {
+          expiresIn: '15m',
+        })
+
+        const refreshToken = jwt.sign({ id: user.usersId }, refreshTokenSecretKey, {
+          expiresIn: '7d',
+        })
+
+        const expirationDate = new Date()
+        expirationDate.setDate(expirationDate.getDate() + 7)
+
+        await knex('refresh_tokens').insert({
+          token: refreshToken,
+          userId: user.usersId,
+          expires_at: expirationDate
+        })
+
+        res.status(200).send({authToken: token, refreshToken: refreshToken});
       } catch (error) {
         console.error('Erro ao fazer login', error);
         res.status(500).send('Erro interno no servidor');
       }
     });
-    
-    }
 
+    app.post('/users/refresh-token', async (req, res) => {
+      const refreshTokenSchema = z.object({
+        refreshToken: z.string(),
+      })
+      const {refreshToken} = refreshTokenSchema.parse(req.body)
+      if (!refreshToken) {
+        return res.status(400).send({ message: "Refresh token is needed." });
+      }
+      try {
+        const decodedToken = jwt.verify(refreshToken, refreshTokenSecretKey);
+        if (typeof decodedToken !== 'object' || !decodedToken.id) {
+          return res.status(401).send({ message: "Refresh token invalid." });
+        }
+       
+        const tokenData = await knex('refresh_tokens').where({ token: refreshToken }).andWhere('expires_at', '>', new Date()).first();
+
+        if(!tokenData) {
+          return res.status(401).send({ message: "Refresh token invalid or expired." });
+        }
+
+        const newToken = jwt.sign({ id: decodedToken.id }, secretKey, {
+          expiresIn: '15m',
+        })
+
+        await knex('refresh_tokens').where('expires_at', '<', new Date()).del()
+
+        res.status(200).send({ authToken: newToken });
     
+    } catch (err) {
+      console.error('Error validating refresh token', err);
+    res.status(401).send({ message: "Error validating refresh token." })
+    } 
+   })
+  }

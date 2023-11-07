@@ -115,8 +115,8 @@ export async function usersRoutes (app: FastifyInstance){
 
         res.status(200).send({authToken: token, refreshToken: refreshToken, userId: user.usersId});
       } catch (error) {
-        console.error('Erro ao fazer login', error);
-        res.status(500).send('Erro interno no servidor');
+        console.error('Login error', error);
+        res.status(500).send('Internal server error');
       }
     });
 

@@ -30,8 +30,14 @@ export async function usersRoutes (app: FastifyInstance){
         })
         
         const {name, email, password} = createUserBodyschema.parse(req.body)
-       
+
         try {
+          // Verifique se o email já existe
+          const existingUserByEmail = await knex('users').where({ email }).first();
+          if (existingUserByEmail) {
+              return res.status(409).send({ message: "Email already in use." });
+          }
+       
             const password_hashed = await bcrypt.hash(password, 10);
         
             const createUser = await knex('users').insert({
@@ -44,8 +50,8 @@ export async function usersRoutes (app: FastifyInstance){
         
             res.status(201).send({ "createUser": createUser });
           } catch (error) {
-            console.error('Error when making password hash', error);
-            res.status(500).send('Internal error making password hash');
+            console.error('Error when creating user', error);
+            res.status(500).send('Internal server error when creating user');
           }
         });
         
@@ -81,6 +87,7 @@ export async function usersRoutes (app: FastifyInstance){
         }
     
         const isPasswordValid = await bcrypt.compare(password, user.password);
+
     
         if (!isPasswordValid) {
           // Senha incorreta
@@ -106,7 +113,7 @@ export async function usersRoutes (app: FastifyInstance){
           expires_at: expirationDate
         })
 
-        res.status(200).send({authToken: token, refreshToken: refreshToken});
+        res.status(200).send({authToken: token, refreshToken: refreshToken, userId: user.usersId});
       } catch (error) {
         console.error('Erro ao fazer login', error);
         res.status(500).send('Erro interno no servidor');

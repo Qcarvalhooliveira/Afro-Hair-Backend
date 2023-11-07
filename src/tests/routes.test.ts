@@ -24,6 +24,23 @@ describe('route tests', () => {
             }).expect(201)
             
         })
+
+        test ('if its a diferent email', async () => {
+            await request(app.server).post('/users').send({
+                name: 'John Doe',
+                email: 'johndoe@johndoe.com',
+                password: '123456'
+            }).expect(201)
+
+            const createUserResponse = await request(app.server).post('/users').send({
+                name: 'John Doe',
+                email: 'johndoe@johndoe.com',
+                password: '123456'
+            }).expect(409)
+            expect(createUserResponse.body).toEqual({ message: "Email already in use." })
+            
+        })
+
         test('if can list all users', async () => {
             const createUserResponse = await request(app.server).post('/users').send({
                 name: 'John Doe',
@@ -47,6 +64,7 @@ describe('route tests', () => {
                 password: '123456'
             })
             expect(response.body.authToken).toEqual(expect.any(String))
+            expect(response.body.userId).toEqual(expect.any(String))
         })
         test('if can delete a user', async () => {
             const createUserResponse = await request(app.server).post('/users').send({

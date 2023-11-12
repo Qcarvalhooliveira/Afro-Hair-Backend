@@ -113,7 +113,7 @@ export async function usersRoutes (app: FastifyInstance){
           expires_at: expirationDate
         })
 
-        res.status(200).send({authToken: token, refreshToken: refreshToken, userId: user.usersId});
+        res.status(200).send({authToken: token, refreshToken: refreshToken, userId: user.usersId, userName: user.name});
       } catch (error) {
         console.error('Login error', error);
         res.status(500).send('Internal server error');

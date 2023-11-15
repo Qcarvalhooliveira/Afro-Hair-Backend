@@ -5,7 +5,7 @@ export async function up(knex: Knex): Promise<void> {
     await knex.schema.createTable('likes', (table) => {
         table.uuid('likesId').primary()
         table.text('productLiked').notNullable()
-        table.uuid('userId').references('usersId').inTable('users')    
+        
     })
 
 }

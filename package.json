@@ -2,6 +2,9 @@
   "name": "afro-hair-backend",
   "version": "1.0.0",
   "main": "index.js",
+  "engines": {
+    "node": ">=18"
+  }, 
   "scripts": {
     "test": "npx vitest",
     "dev": "tsx watch src/server.ts",
@@ -34,6 +37,7 @@
     "fastify-jwt": "^4.2.0",
     "jsonwebtoken": "^9.0.2",
     "knex": "^3.0.1",
+    "pg": "^8.11.3",
     "sqlite3": "^5.1.6",
     "zod": "^3.22.4"
   },

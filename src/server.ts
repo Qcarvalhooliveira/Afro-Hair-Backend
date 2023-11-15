@@ -1,8 +1,10 @@
 import { app } from './app'
 import { env } from './env'
 
-app.listen({
+app
+  .listen({
     port: env.PORT,
-}).then(() =>{
+  })
+  .then(() => {
     console.log('http server running!')
-})
+  })

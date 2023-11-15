@@ -5,20 +5,19 @@ import { usersRoutes } from './routes/users'
 import fastifyCors from '@fastify/cors'
 import fastifyJwt from '@fastify/jwt'
 
-
 export const app = fastify()
 app.register(fastifyCors, {
-    origin: "*",
+  origin: '*',
 })
 app.register(fastifyJwt, {
-    secret: env.JWT_KEY,
-    cookie: {
-        cookieName: 'refreshToken',
-        signed: false
-    },
-    sign: {
-        expiresIn: '10m'
-    }
+  secret: env.JWT_KEY,
+  cookie: {
+    cookieName: 'refreshToken',
+    signed: false,
+  },
+  sign: {
+    expiresIn: '10m',
+  },
 })
 
 app.register(usersRoutes)
